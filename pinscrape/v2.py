@@ -180,7 +180,7 @@ class Pinterest:
         if self.sleep_time:
             time.sleep(self.sleep_time)
 
-        image_urls = []
+        output = []
         if response.status_code != 200:
             logging.warning(f"Image search has failed!, {response.status_code}, {response.text}")
             self.errors.append(f"Image search has failed!, {response.status_code}, {response.text}")
@@ -189,10 +189,10 @@ class Pinterest:
             json_data = response.json()
             results = json_data.get('resource_response', {}).get('data', {}).get('results', [])
             for result in results:
-                image_urls.append(result['images']['orig']['url'])
+                output.append(result)
             self.client_context = json_data['client_context']
-            logging.info(f"Total {len(image_urls)} image(s) found.")
-            return image_urls
+            logging.info(f"Total {len(output)} image(s) found.")
+            return output
         except requests.exceptions.JSONDecodeError as jde:
             self.errors.append(jde.args)
             return []
